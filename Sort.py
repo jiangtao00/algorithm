@@ -10,10 +10,13 @@ class algorithm_sort(object):
 		param: list
 		return: list (but sorted)
 		"""
+		n = len(ls)
+		if n <= 1:
+			return ls
 		# the i can contral the times of the cycle, and the last value is the biggest by once loop
-		for i in range(len(ls)):
+		for i in range(n):
 			# the compare's times is controled by j 
-			for j in range(len(ls)-i-1):
+			for j in range(n-i-1):
 				if ls[j] > ls[j+1]:
 					ls[j], ls[j+1] = ls[j+1], ls[j]
 		print(ls)
@@ -26,6 +29,8 @@ class algorithm_sort(object):
 		"""
 		# get the list's length
 		n = len(ls)
+		if n <= 1:
+			return ls
 		for i in range(n):
 			# beacuse the started location is the end of list before sorted
 			j = i
@@ -44,9 +49,12 @@ class algorithm_sort(object):
 		param: a list but not sorted
 		return: list but sorted
 		"""
-		for i in range(len(ls)-1):
+		n = len(ls)
+		if n <= 1:
+			return ls
+		for i in range(n-1):
 			# beacuse the j is started from that sorted by i loops
-			for j in range(i, len(ls)-1):
+			for j in range(i, n-1):
 				# set a index note the min value of the index in list that not sorted
 				min_index = i
 				if ls[j] < ls[min_index]:
@@ -60,8 +68,10 @@ class algorithm_sort(object):
 		"""
 		# get the length of the list
 		n = len(ls)
+		if n <= 1:
+			return ls
 		# set the step for started
-		step = n // 3
+		step = n // 2
 		# we can sort the list until step=1
 		while step > 0:
 			for i in range(step, n):
@@ -88,13 +98,14 @@ class algorithm_sort(object):
 			low, high = start, end
 			# the first value is assumed to be the value that needs to be sorted
 			mid_value = ls[0]
-			# Break out of the loop when i equals j
+			# Break out of the loop when low equals high
 			while low < high:
 				while low < high and ls[high] > mid_value:
-					# let the cursor j move to left once space
+					# let the cursor high move to left once space
 					high -= 1
+				# when the loop ends, the value of high is smaller than mid_value,
 				ls[high] = ls[low]
-				while low < high and ls[low] < mid_value:
+				while low < high and ls[low] <= mid_value:
 					low += 1
 				ls[low] = ls[high]
 			print(ls)
@@ -103,6 +114,39 @@ class algorithm_sort(object):
 			self.quick_sort(ls, start, low-1)
 			self.quick_sort(ls, high+1, end)
 		return ls
+
+	def merge_sort(self, ls):
+		"""
+		the classic idea of divide and rule
+		param: list
+		return: list with sorted
+		"""
+		n = len(ls)
+		if n <= 1:
+			return ls
+		mid = n // 2
+		# left_list represents the new list that survived by merge sort
+		left_list = self.merge_sort(ls[:mid])
+
+		# right_list represents the new list that survived by merge sort
+		right_list = self.merge_sort(ls[mid:])
+
+		# To mix two subsequences into a new sequence
+		left_pointer, right_pointer = 0, 0
+		result = []
+
+		while left_pointer < len(left_list) and right_pointer < len(right_list):
+			if left_list[left_pointer] < right_list[right_pointer]:
+				result.append(left_list[left_pointer])
+				left_pointer += 1
+			else:
+				result.append(right_list[right_pointer])
+				right_pointer += 1
+
+		result += left_list[left_pointer:]
+		result += right_list[right_pointer:]
+		print(result)
+		return result
 		
 
 if __name__ == '__main__':
@@ -112,3 +156,4 @@ if __name__ == '__main__':
 	al.bubble_sort(ls)
 	al.insert_sort(ls)
 	al.quick_sort(ls, 0, len(ls)-1)
+	al.merge_sort(ls)
